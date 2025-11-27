@@ -9,6 +9,7 @@ import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.js';
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 const FIXED_HIGHLIGHT_SECONDS = 30;
 const DEFAULT_COVER_PLACEHOLDER = '/placeholder-cover.svg';
@@ -40,7 +41,6 @@ export default function UploadPage() {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
   const [tagsInput, setTagsInput] = useState('');
   const [waveError, setWaveError] = useState('');
   const [audioDuration, setAudioDuration] = useState<number | null>(null);
@@ -53,6 +53,8 @@ export default function UploadPage() {
   const [, setIsPlaying] = useState(false); // state used only for UI sync via events
   const updateRegionPositionRef = useRef<(time: number) => void>(() => {});
   const [jumpSeconds, setJumpSeconds] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isLoggedIn = useMemo(() => Boolean(user?.id), [user]);
 
@@ -179,11 +181,11 @@ export default function UploadPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!user?.id) {
-      setMessage('로그인 후 업로드할 수 있습니다.');
+      setErrorMessage('로그인 후 업로드할 수 있습니다.');
       return;
     }
     setLoading(true);
-    setMessage('');
+    setErrorMessage(null);
 
     let audioUrl = form.audio_url;
     let coverUrl = form.cover_image || DEFAULT_COVER_PLACEHOLDER;
@@ -238,14 +240,14 @@ export default function UploadPage() {
       });
 
       if (!res.ok) throw new Error('업로드 실패');
-      setMessage('업로드 완료! 피드에서 확인해보세요.');
+      setShowSuccess(true);
       setForm(initialState);
       setTagsInput(initialState.tags.join(','));
       setAudioFile(null);
       setCoverFile(null);
     } catch (err) {
       console.error(err);
-      setMessage('업로드에 실패했어요. 값들을 확인해주세요.');
+      setErrorMessage('업로드에 실패했어요. 값들을 확인해주세요.');
     } finally {
       setLoading(false);
     }
@@ -317,7 +319,7 @@ export default function UploadPage() {
       </div>
       {!isLoggedIn && (
         <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm text-orange-700 ring-1 ring-orange-100">
-          업로드하려면 로그인해주세요. 상단의 로그인 버튼을 눌러주세요.
+          업로드하려면 로그인해주세요. 메인화면 상단의 로그인 버튼을 눌러주세요.
         </p>
       )}
 
@@ -489,7 +491,53 @@ export default function UploadPage() {
         </button>
       </form>
 
-      {message && <p className="mt-4 text-sm text-orange-600">{message}</p>}
+      {showSuccess &&
+        typeof window !== 'undefined' &&
+        createPortal(
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+            <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl ring-1 ring-orange-100">
+              <h3 className="text-lg font-bold text-slate-900">업로드 완료!</h3>
+              <p className="mt-2 text-sm text-slate-600">피드에서 새 데모를 확인해보세요.</p>
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowSuccess(false)}
+                  className="w-full rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-400"
+                >
+                  닫기
+                </button>
+                <Link
+                  href="/"
+                  className="w-full rounded-full border border-orange-200 px-4 py-2 text-sm font-semibold text-orange-600 transition hover:border-orange-300"
+                >
+                  메인으로
+                </Link>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {errorMessage &&
+        typeof window !== 'undefined' &&
+        createPortal(
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+            <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl ring-1 ring-red-100">
+              <h3 className="text-lg font-bold text-red-600">업로드 실패</h3>
+              <p className="mt-2 text-sm text-slate-700">{errorMessage}</p>
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => setErrorMessage(null)}
+                  className="w-full rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-400"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
