@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import WaveSurfer from 'wavesurfer.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.js';
-import type { Region, RegionsPlugin as RegionsPluginType } from 'wavesurfer.js/dist/plugins/regions.js';
+import type { Region } from 'wavesurfer.js/dist/plugins/regions.js';
 import { supabaseBrowserClient } from '@/lib/supabaseClient';
 import { TrackInsert } from '@/types';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
@@ -34,7 +34,7 @@ export default function EditUploadClient({ id }: { id: string }) {
   const waveformRef = useRef<HTMLDivElement | null>(null);
   const waveSurferRef = useRef<WaveSurfer | null>(null);
   const [audioObjectUrl, setAudioObjectUrl] = useState<string | null>(null);
-  const regionsPluginRef = useRef<RegionsPluginType | null>(null);
+  const regionsPluginRef = useRef<ReturnType<typeof RegionsPlugin.create> | null>(null);
   const regionRef = useRef<Region | null>(null);
   const [, setIsPlaying] = useState(false);
   const updateRegionPositionRef = useRef<(time: number) => void>(() => {});

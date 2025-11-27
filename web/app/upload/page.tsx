@@ -6,7 +6,7 @@ import { TrackInsert } from '@/types';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import WaveSurfer from 'wavesurfer.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.js';
-import type { Region, RegionsPlugin as RegionsPluginType } from 'wavesurfer.js/dist/plugins/regions.js';
+import type { Region } from 'wavesurfer.js/dist/plugins/regions.js';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -48,7 +48,7 @@ export default function UploadPage() {
   const waveSurferRef = useRef<WaveSurfer | null>(null);
   const regionIdRef = useRef<string | null>(null);
   const [audioObjectUrl, setAudioObjectUrl] = useState<string | null>(null);
-  const regionsPluginRef = useRef<RegionsPluginType | null>(null);
+  const regionsPluginRef = useRef<ReturnType<typeof RegionsPlugin.create> | null>(null);
   const regionRef = useRef<Region | null>(null);
   const [, setIsPlaying] = useState(false); // state used only for UI sync via events
   const updateRegionPositionRef = useRef<(time: number) => void>(() => {});
