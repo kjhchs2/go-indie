@@ -114,7 +114,9 @@ export default function EditUploadClient({ id }: { id: string }) {
 
     waveSurferRef.current = ws;
     const regionsPlugin = ws.registerPlugin(
-      RegionsPlugin.create({
+      // 타입 정의상 옵션 미지원으로 any 캐스팅
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (RegionsPlugin as any).create({
         dragSelection: {
           slop: 5,
         },

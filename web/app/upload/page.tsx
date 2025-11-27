@@ -93,7 +93,9 @@ export default function UploadPage() {
 
     waveSurferRef.current = ws;
     const regionsPlugin = ws.registerPlugin(
-      RegionsPlugin.create({
+      // 타입 정의가 옵션을 받지 않는 것으로 되어 있어 any 캐스팅
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (RegionsPlugin as any).create({
         dragSelection: {
           slop: 5,
         },
