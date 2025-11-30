@@ -39,7 +39,6 @@ export function useSupabaseAuth() {
             email: user.email,
             nickname: user.user_metadata?.name || user.email?.split('@')[0],
             profile_image: user.user_metadata?.picture || '',
-            role: 'listener',
           }),
         });
       } catch (err) {

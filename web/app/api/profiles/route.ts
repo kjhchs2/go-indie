@@ -17,13 +17,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing id' }, { status: 400 });
   }
 
+  // 기존 role을 보존: 이미 존재하면 덮어쓰지 않음
+  let roleToUse = role;
+  const { data: existing } = await supabase.from('profiles').select('role').eq('id', id).maybeSingle();
+  if (existing?.role) {
+    roleToUse = existing.role;
+  }
+
   const { error } = await supabase.from('profiles').upsert(
     {
       id,
       email,
       nickname,
       profile_image,
-      role,
+      role: roleToUse,
       bio,
     },
     { onConflict: 'id' },
