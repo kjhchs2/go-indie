@@ -36,7 +36,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ id: str
   const links =
     profile.links
       ?.split('\n')
-      .map((link) => link.trim())
+      .map((link: string) => link.trim())
       .filter(Boolean) ?? [];
 
   return (
