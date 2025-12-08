@@ -305,7 +305,7 @@ export default function UploadPage() {
       >
         <ArrowLeft size={18} strokeWidth={2.5} />
       </Link>
-      <h1 className="text-2xl font-bold text-slate-900">데모 업로드</h1>
+      <h1 className="text-2xl font-bold text-slate-900">음원 업로드</h1>
       <div className="mt-1 flex items-center justify-between">
         <p className="text-sm text-slate-600">
           오디오 파일을 올리고 하이라이트 구간을 지정하세요. (Supabase Storage가 연결되면 파일 업로드)
@@ -497,7 +497,7 @@ export default function UploadPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
             <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl ring-1 ring-orange-100">
               <h3 className="text-lg font-bold text-slate-900">업로드 완료!</h3>
-              <p className="mt-2 text-sm text-slate-600">피드에서 새 데모를 확인해보세요.</p>
+              <p className="mt-2 text-sm text-slate-600">메인화면에서 새 음원을 확인해보세요.</p>
               <div className="mt-4 flex flex-col gap-2">
                 <button
                   type="button"
