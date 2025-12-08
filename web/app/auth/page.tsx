@@ -15,10 +15,14 @@ export default function AuthPage() {
     }
     setLoading(true);
     setStatus(null);
+    const redirectTo =
+      typeof window !== 'undefined' && window.location?.origin
+        ? `${window.location.origin}/`
+        : undefined;
     const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${location.origin}/`,
+        redirectTo,
       },
     });
     if (error) setStatus(error.message);

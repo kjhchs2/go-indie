@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LogOut } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,6 +10,23 @@ import { supabaseBrowserClient } from '@/lib/supabaseClient';
 export function AuthStatus() {
   const { user } = useSupabaseAuth();
   const [loading, setLoading] = useState(false);
+   const [profileImage, setProfileImage] = useState<string | null>(null);
+
+   useEffect(() => {
+     const loadProfile = async () => {
+       if (!user || !supabaseBrowserClient) {
+         setProfileImage(null);
+         return;
+       }
+       const { data } = await supabaseBrowserClient
+         .from('profiles')
+         .select('profile_image')
+         .eq('id', user.id)
+         .maybeSingle();
+       setProfileImage(data?.profile_image || null);
+     };
+     loadProfile();
+   }, [user]);
 
   const handleSignOut = async () => {
     if (!supabaseBrowserClient) return;
@@ -31,9 +48,9 @@ export function AuthStatus() {
 
   return (
     <div className="flex items-center gap-3">
-      {user.user_metadata?.avatar_url && (
+      {(profileImage || user.user_metadata?.picture || user.user_metadata?.avatar_url) && (
         <Image
-          src={user.user_metadata.avatar_url}
+          src={profileImage || user.user_metadata?.picture || user.user_metadata?.avatar_url}
           alt="avatar"
           width={32}
           height={32}

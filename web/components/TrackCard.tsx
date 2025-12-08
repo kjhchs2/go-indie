@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { BadgeCheck, Headphones, Music, Sparkles, Users } from 'lucide-react';
 import { Track } from '@/types';
@@ -114,7 +115,17 @@ export function TrackCard({ track, isActive, onDonate, onSupportersOpen, onSuppo
           </div>
           <h2 className="mt-1 text-3xl font-bold leading-tight text-[var(--foreground)]">{track.title}</h2>
           <div className="mt-1 flex items-center gap-2 text-sm text-[var(--muted)]">
-            <span className="font-medium">{track.artist?.nickname ?? '익명 아티스트'}</span>
+            {track.artist?.id ? (
+              <Link
+                href={`/artist/${track.artist.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="font-medium text-[var(--accent)] hover:underline"
+              >
+                {track.artist.nickname ?? '익명 아티스트'}
+              </Link>
+            ) : (
+              <span className="font-medium">{track.artist?.nickname ?? '익명 아티스트'}</span>
+            )}
             <BadgeCheck size={16} className="text-[var(--accent)]" />
           </div>
           <div className="mt-3 flex flex-wrap gap-2">

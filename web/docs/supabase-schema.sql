@@ -6,6 +6,7 @@ create table if not exists public.profiles (
   profile_image text,
   role text default 'listener',
   bio text,
+  links text,
   created_at timestamptz default now()
 );
 
@@ -41,3 +42,17 @@ create table if not exists public.donations (
 );
 
 create index if not exists donations_receiver_created_idx on public.donations (receiver_id, created_at desc);
+
+-- Artist applications (auto-approval on submit)
+create table if not exists public.artist_applications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id),
+  stage_name text,
+  bio text,
+  links text,
+  agreed_terms boolean default false,
+  status text default 'approved',
+  created_at timestamptz default now()
+);
+
+create index if not exists artist_applications_user_idx on public.artist_applications (user_id, created_at desc);

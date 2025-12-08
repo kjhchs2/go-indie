@@ -20,7 +20,8 @@ export async function GET() {
           nickname,
           profile_image,
           role,
-          bio
+          bio,
+          links
         )
       `,
     )

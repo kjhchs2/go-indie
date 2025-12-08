@@ -7,6 +7,7 @@ export interface Profile {
   profile_image?: string;
   role: UserRole;
   bio?: string;
+  links?: string;
 }
 
 export interface Track {
@@ -25,6 +26,7 @@ export interface Track {
   funding_goal_amount?: number;
   funding_raised_amount?: number;
   funding_purpose?: string;
+  links?: string;
 }
 
 export interface Donation {

@@ -202,8 +202,8 @@ export default function UploadPage() {
           upsert: false,
         });
         if (error) throw error;
-        const { data: signed } = await supabaseBrowserClient.storage.from('audio').createSignedUrl(data.path, 60 * 60 * 24 * 7);
-        audioUrl = signed?.signedUrl || '';
+        const { data: publicData } = supabaseBrowserClient.storage.from('audio').getPublicUrl(data.path);
+        audioUrl = publicData.publicUrl || '';
       } else if (!supabaseBrowserClient && audioFile) {
         audioUrl = audioObjectUrl || '';
       }
@@ -215,8 +215,8 @@ export default function UploadPage() {
           upsert: false,
         });
         if (error) throw error;
-        const { data: signed } = await supabaseBrowserClient.storage.from('covers').createSignedUrl(data.path, 60 * 60 * 24 * 7);
-        coverUrl = signed?.signedUrl || '';
+        const { data: publicData } = await supabaseBrowserClient.storage.from('covers').getPublicUrl(data.path);
+        coverUrl = publicData.publicUrl || '';
       } else if (!supabaseBrowserClient && coverFile) {
         coverUrl = URL.createObjectURL(coverFile);
       } else {

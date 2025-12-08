@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel } from 'swiper/modules';
@@ -12,6 +12,9 @@ import { TrackCard } from '@/components/TrackCard';
 import { DonationModal } from '@/components/DonationModal';
 import { AuthStatus } from '@/components/AuthStatus';
 import { useMemo } from 'react';
+import Link from 'next/link';
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { supabaseBrowserClient } from '@/lib/supabaseClient';
 
 const fetchTracks = async (): Promise<Track[]> => {
   const res = await fetch('/api/tracks');
@@ -30,8 +33,27 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [donationTarget, setDonationTarget] = useState<Track | null>(null);
   const [supporterModalOpen, setSupporterModalOpen] = useState(false);
+  const { user } = useSupabaseAuth();
+  const [isArtist, setIsArtist] = useState(false);
 
   const swiperEnabled = useMemo(() => !supporterModalOpen, [supporterModalOpen]);
+
+  useEffect(() => {
+    const loadRole = async () => {
+      if (!user || !supabaseBrowserClient) {
+        setIsArtist(false);
+        return;
+      }
+      const { data: profile } = await supabaseBrowserClient
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      setIsArtist(profile?.role === 'artist');
+    };
+    loadRole();
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
@@ -46,12 +68,36 @@ export default function Home() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <a
-            href="/upload"
-            className="rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)]"
-          >
-            데모 올리기
-          </a>
+          {user && !isArtist && (
+            <Link
+              href="/artist-apply"
+              className="rounded-full border border-[var(--border)] px-3 py-2 text-xs font-semibold text-[var(--accent)] transition hover:border-[var(--accent)]"
+            >
+              아티스트 신청
+            </Link>
+          )}
+          {user && isArtist && (
+            <>
+              <Link
+                href="/artist/edit"
+                className="rounded-full border border-[var(--border)] px-3 py-2 text-xs font-semibold text-[var(--accent)] transition hover:border-[var(--accent)]"
+              >
+                소개 수정
+              </Link>
+              <Link
+                href={`/artist/${user.id}`}
+                className="rounded-full border border-[var(--border)] px-3 py-2 text-xs font-semibold text-[var(--accent)] transition hover:border-[var(--accent)]"
+              >
+                내 소개
+              </Link>
+              <Link
+                href="/upload"
+                className="rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)]"
+              >
+                음원 업로드
+              </Link>
+            </>
+          )}
           <AuthStatus />
         </div>
       </header>
