@@ -55,7 +55,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ id: str
             {profile.bio && <p className="mt-2 whitespace-pre-line text-sm text-[var(--muted)]">{profile.bio}</p>}
             {links.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
-                {links.map((link) => {
+                {links.map((link: string) => {
                   const href = link.startsWith('http://') || link.startsWith('https://') ? link : `https://${link}`;
                   return (
                     <a
