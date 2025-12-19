@@ -1,0 +1,23 @@
+{
+  "short_name": "GoIndie",
+  "name": "Go-Indie",
+  "description": "스와이프해서 듣고, 후원까지 연결되는 숏폼 오디오 실험",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f5f2",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["music", "entertainment", "audio"],
+  "orientation": "portrait"
+}
