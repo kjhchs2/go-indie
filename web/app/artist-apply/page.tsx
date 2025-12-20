@@ -1,9 +1,29 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import type { FormEvent, MouseEvent } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+
+const summaryTerms = [
+  {
+    title: '[저작권 보증]',
+    body: '업로드하는 모든 음원과 이미지는 본인의 창작물이며 타인의 저작권을 침해하지 않았음을 보증합니다.',
+  },
+  {
+    title: '[이용 허락]',
+    body: '서비스 운영·홍보를 위해 회사가 귀하의 콘텐츠를 저장, 복제, 전송 및 구간 발췌 편집할 권한을 부여합니다.',
+  },
+  {
+    title: '[수익 정산]',
+    body: '후원금은 플랫폼 이용료, PG 결제 수수료 및 세금(3.3%) 등을 공제한 금액으로 정산됩니다.',
+  },
+  {
+    title: '[위반 제재]',
+    body: '저작권 침해나 부적절한 콘텐츠로 판단되면 사전 통보 없이 삭제되며 해당 수익금은 지급이 거절될 수 있습니다.',
+  },
+];
 
 export default function ArtistApplyPage() {
   const { user } = useSupabaseAuth();
@@ -14,6 +34,14 @@ export default function ArtistApplyPage() {
   const [agree, setAgree] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [termsOpen, setTermsOpen] = useState(false);
+
+  const handleCheckboxClick = (e: MouseEvent<HTMLInputElement>) => {
+    if (!agree) {
+      e.preventDefault();
+      setTermsOpen(true);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -44,7 +72,6 @@ export default function ArtistApplyPage() {
         throw new Error(json.error || '신청에 실패했습니다.');
       }
       setStatus('아티스트 전환이 완료되었습니다.');
-      // 안내 후 메인으로 이동
       setTimeout(() => router.push('/'), 1200);
     } catch (err) {
       setStatus(err instanceof Error ? err.message : '신청에 실패했습니다.');
@@ -93,9 +120,24 @@ export default function ArtistApplyPage() {
             className="w-full rounded-2xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm outline-none ring-2 ring-transparent transition focus:border-[var(--accent)] focus:ring-[color-mix(in_srgb,var(--accent)_20%,transparent)]"
           />
         </div>
-        <label className="flex items-start gap-2 text-sm">
-          <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-1" />
-          <span>약관 및 정책에 동의합니다.</span>
+        <label className="flex flex-wrap items-start gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={agree}
+            onClick={handleCheckboxClick}
+            onChange={(e) => setAgree(e.target.checked)}
+            className="mt-1"
+          />
+          <span
+            className="cursor-pointer text-[var(--accent)] underline-offset-4 hover:underline"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setTermsOpen(true);
+            }}
+          >
+            약관 및 정책에 동의합니다.
+          </span>
         </label>
 
         <button
@@ -108,6 +150,44 @@ export default function ArtistApplyPage() {
       </form>
 
       {status && <p className="mt-4 text-sm text-[var(--accent)]">{status}</p>}
+
+      {termsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8">
+          <div className="w-full max-w-3xl rounded-3xl bg-[var(--card)] p-6 shadow-2xl ring-1 ring-[var(--border)]">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-[var(--foreground)]">약관 및 정책 핵심 요약</h2>
+              <button
+                type="button"
+                className="text-sm font-medium text-[var(--accent)]"
+                onClick={() => setTermsOpen(false)}
+              >
+                닫기
+              </button>
+            </div>
+            <ul className="mt-4 space-y-4 text-sm text-[var(--muted)]">
+              {summaryTerms.map((term) => (
+                <li key={term.title}>
+                  <p className="font-semibold text-[var(--foreground)]">{term.title}</p>
+                  <p className="mt-1 leading-relaxed">{term.body}</p>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6 flex flex-col gap-3 text-xs text-[var(--muted)]">
+              <p>모달에서 “동의합니다” 버튼을 누르면 체크박스가 자동으로 선택됩니다.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setAgree(true);
+                  setTermsOpen(false);
+                }}
+                className="w-full rounded-2xl bg-[var(--accent)] py-3 text-center text-xs font-semibold uppercase text-white shadow-sm transition hover:bg-[var(--accent-strong)]"
+              >
+                동의합니다
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
