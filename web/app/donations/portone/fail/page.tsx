@@ -4,10 +4,9 @@ import Link from 'next/link';
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
-export default async function PortOneFailPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
-  const params = await searchParams;
-  const codeRaw = params?.code;
-  const messageRaw = params?.message;
+export default function PortOneFailPage({ searchParams }: { searchParams: SearchParams }) {
+  const codeRaw = searchParams?.code;
+  const messageRaw = searchParams?.message;
   const code = Array.isArray(codeRaw) ? codeRaw[0] : codeRaw;
   const message = Array.isArray(messageRaw) ? messageRaw[0] : messageRaw;
 
