@@ -2,13 +2,11 @@
 
 import Link from 'next/link';
 
-export default function PortOneFailPage({
-  searchParams,
-}: {
-  searchParams: { code?: string; message?: string };
-}) {
-  const code = searchParams.code;
-  const message = searchParams.message;
+type SearchParams = { code?: string; message?: string };
+
+export default function PortOneFailPage({ searchParams }: { searchParams?: SearchParams }) {
+  const code = searchParams?.code;
+  const message = searchParams?.message;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4">
