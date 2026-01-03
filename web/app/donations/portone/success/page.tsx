@@ -6,13 +6,16 @@ import Link from 'next/link';
 type Status = 'processing' | 'completed' | 'error';
 type SearchParams = Record<string, string | string[] | undefined>;
 
-export default function PortOneSuccessPage({ searchParams }: { searchParams: SearchParams }) {
+export default async function PortOneSuccessPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const [status, setStatus] = useState<Status>('processing');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const paymentId = searchParams?.paymentId as string | undefined;
-    const intentToken = searchParams?.intentToken as string | undefined;
+    const params = await searchParams;
+    const paymentIdRaw = params?.paymentId;
+    const intentTokenRaw = params?.intentToken;
+    const paymentId = Array.isArray(paymentIdRaw) ? paymentIdRaw[0] : paymentIdRaw;
+    const intentToken = Array.isArray(intentTokenRaw) ? intentTokenRaw[0] : intentTokenRaw;
 
     if (!paymentId || !intentToken) {
       setStatus('error');
