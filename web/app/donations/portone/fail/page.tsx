@@ -4,9 +4,12 @@ import Link from 'next/link';
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
-export default function PortOneFailPage({ searchParams }: { searchParams: SearchParams }) {
-  const code = (searchParams?.code as string | undefined) ?? undefined;
-  const message = (searchParams?.message as string | undefined) ?? undefined;
+export default async function PortOneFailPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const params = await searchParams;
+  const codeRaw = params?.code;
+  const messageRaw = params?.message;
+  const code = Array.isArray(codeRaw) ? codeRaw[0] : codeRaw;
+  const message = Array.isArray(messageRaw) ? messageRaw[0] : messageRaw;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4">
