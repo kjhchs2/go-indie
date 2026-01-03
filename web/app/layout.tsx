@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from '@/components/providers';
+import { BusinessFooter } from '@/components/BusinessFooter';
 
 export const metadata: Metadata = {
   title: 'Go-Indie',
@@ -22,7 +23,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
-        <Providers>{children}</Providers>
+        <div className="flex min-h-screen flex-col pb-28 md:pb-0">
+          <Providers>
+            <div className="flex-1">{children}</div>
+          </Providers>
+          <BusinessFooter />
+        </div>
       </body>
     </html>
   );

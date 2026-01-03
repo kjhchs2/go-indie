@@ -21,6 +21,21 @@ npm run dev
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE=
+NEXT_PUBLIC_PORTONE_STORE_ID=  # PortOne 결제 요청용 store id (없으면 모의 후원)
+NEXT_PUBLIC_PORTONE_CHANNEL_KEY= # 선택: 채널 키(페이저/카드 등 구분)
+NEXT_PUBLIC_PORTONE_PG_PROVIDER= # 선택: 채널키가 없을 때 사용할 PG provider 코드
+PORTONE_SECRET_KEY=            # PortOne secret key (결제 검증용, 백엔드 전용)
+PORTONE_INTENT_SECRET=         # 선택: 주문 intent 서명용 시크릿 (미지정 시 secret key 사용)
+NEXT_PUBLIC_BIZ_NAME=          # 상호명
+NEXT_PUBLIC_BIZ_REG_NO=        # 사업자등록번호
+NEXT_PUBLIC_BIZ_OWNER=         # 대표자명
+NEXT_PUBLIC_BIZ_ADDRESS=       # 사업장 주소
+NEXT_PUBLIC_BIZ_CONTACT=       # 연락처(전화/이메일)
+NEXT_PUBLIC_MAIL_ORDER_NO=     # 통신판매신고번호 (없으면 '해당 없음' 표기)
+NEXT_PUBLIC_POLICY_SERVICE_PERIOD=   # 서비스 제공(배송) 기간 안내 문구
+NEXT_PUBLIC_POLICY_EXCHANGE_REFUND=   # 교환/환불 정책 문구
+NEXT_PUBLIC_POLICY_CANCEL=            # 취소 규정 문구
+NEXT_PUBLIC_POLICY_CONTACT_EMAIL=     # 환불/취소 문의 이메일
 ```
 
 ## Supabase 준비
