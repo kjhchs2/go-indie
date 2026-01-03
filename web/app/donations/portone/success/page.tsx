@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 type Status = 'processing' | 'completed' | 'error';
-type SearchParams = { paymentId?: string; intentToken?: string };
+type SearchParams = Record<string, string | string[] | undefined>;
 
-export default function PortOneSuccessPage({ searchParams }: { searchParams?: SearchParams }) {
+export default function PortOneSuccessPage({ searchParams }: { searchParams: SearchParams }) {
   const [status, setStatus] = useState<Status>('processing');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const paymentId = searchParams?.paymentId;
-    const intentToken = searchParams?.intentToken;
+    const paymentId = searchParams?.paymentId as string | undefined;
+    const intentToken = searchParams?.intentToken as string | undefined;
 
     if (!paymentId || !intentToken) {
       setStatus('error');
