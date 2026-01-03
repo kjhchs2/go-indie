@@ -1,14 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-type SearchParams = Record<string, string | string[] | undefined>;
-
-export default function PortOneFailPage({ searchParams }: { searchParams: SearchParams }) {
-  const codeRaw = searchParams?.code;
-  const messageRaw = searchParams?.message;
-  const code = Array.isArray(codeRaw) ? codeRaw[0] : codeRaw;
-  const message = Array.isArray(messageRaw) ? messageRaw[0] : messageRaw;
+function FailContent() {
+  const searchParams = useSearchParams();
+  const code = searchParams.get('code') || undefined;
+  const message = searchParams.get('message') || undefined;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4">
@@ -26,5 +25,21 @@ export default function PortOneFailPage({ searchParams }: { searchParams: Search
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PortOneFailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4">
+          <div className="w-full max-w-md rounded-3xl bg-white p-6 text-center text-sm text-[var(--muted)] shadow">
+            결제 정보를 불러오는 중입니다...
+          </div>
+        </div>
+      }
+    >
+      <FailContent />
+    </Suspense>
   );
 }
