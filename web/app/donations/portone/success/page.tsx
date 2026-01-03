@@ -2,19 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 type Status = 'processing' | 'completed' | 'error';
-type SearchParams = Record<string, string | string[] | undefined>;
 
-export default function PortOneSuccessPage({ searchParams }: { searchParams: SearchParams }) {
+export default function PortOneSuccessPage() {
   const [status, setStatus] = useState<Status>('processing');
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const paymentIdRaw = searchParams?.paymentId;
-    const intentTokenRaw = searchParams?.intentToken;
-    const paymentId = Array.isArray(paymentIdRaw) ? paymentIdRaw[0] : paymentIdRaw;
-    const intentToken = Array.isArray(intentTokenRaw) ? intentTokenRaw[0] : intentTokenRaw;
+    const paymentId = searchParams.get('paymentId') || undefined;
+    const intentToken = searchParams.get('intentToken') || undefined;
 
     if (!paymentId || !intentToken) {
       setStatus('error');
